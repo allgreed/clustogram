@@ -9,10 +9,10 @@ Transforms a IaC k8s description (in the form of k8s .yaml and Terraform .hcls) 
 
 Hint: if something doesn't work because of missing package please add the package to `default.nix` instead of installing on your computer. Why solve the problem for one if you can solve the problem for all? ;)
 ## Structure
-`ulmz` - UML documentation
-`cli` - parses .hcl, .yamls into a stream of normalized k8s objects
-`graph` - finds connections between k8s objects in a loose collection
-`ui`- displays the connections
+- `ulmz` - UML documentation
+- `cli` - parses .hcl, .yamls into a stream of normalized k8s objects
+- `graph` - finds connections between k8s objects in a loose collection
+- `ui`- displays the connections
 
 ## One-time setup
 ? in each of the folders?
