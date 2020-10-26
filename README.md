@@ -14,14 +14,12 @@ Hint: if something doesn't work because of missing package please add the packag
 - `graph` - finds connections between k8s objects in a loose collection
 - `ui`- displays the connections
 
-## One-time setup
-? in each of the folders?
-
+## One-time setup (this directory only)
 ```
 make init
 ```
 
-## Everything - (in each of the folders)
+## Everything - (in each of the directories)
 ```
 make help
 ```
