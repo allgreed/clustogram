@@ -1,0 +1,25 @@
+{
+    "$schema":"http://json-schema.org/draft-07/schema#",
+    "$id":"com.przyjaznemisie.contracts.cli-to-graph",
+    "title":"CLI -> Graph",
+    "type":"object",
+    "properties":{
+        "version":{
+            "type":"integer",
+            "exclusiveMinimum":0,
+            "maximum":1
+        },
+        "kubernetesObjects":{
+            "type":"array",
+            "items":{
+                "type":"object",
+                "description":"TODO: reference all possible objects instead of just one",
+                "$ref":"https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json"
+            }
+        }
+    },
+    "required":[
+        "version",
+        "kubernetesObjects"
+    ]
+}
