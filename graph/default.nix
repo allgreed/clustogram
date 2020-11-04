@@ -7,12 +7,25 @@ let
     # obtain via `git ls-remote https://github.com/nixos/nixpkgs-channels nixos-unstable`
   };
   pkgs = import nixpkgs { config = {}; };
+  pythonCore = pkgs.python38;
+  pythonPkgs = python-packages: with python-packages; [
+      flask
+    ];
+  myPython = pythonCore.withPackages pythonPkgs;
 in
-pkgs.mkShell {
-  buildInputs =
-  with pkgs;
-  [
-    git
-    gnumake
-  ];
+pkgs.stdenv.mkDerivation rec {
+    name = "clustogram";
+    src = ./.;
+    propagatedbuildInputs =
+        with pkgs;
+        [
+          git
+          gnumake
+          entr
+          # this is only for the shell
+
+          myPython
+          # this is a requirement
+        ];
+    buildInputs = propagatedbuildInputs;
 }
