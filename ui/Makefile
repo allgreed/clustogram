@@ -5,7 +5,7 @@
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	@echo "Not implemented"; false
+	npm start
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false
@@ -33,6 +33,7 @@ container: build ## create container
 .PHONY: setup
 
 setup:
+	npm install
 
 # Helpers
 # ###############

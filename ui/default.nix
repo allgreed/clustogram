@@ -14,6 +14,6 @@ pkgs.mkShell {
   [
     git
     gnumake
-    nodejs-10_x
+    nodejs-14_x
   ];
 }
