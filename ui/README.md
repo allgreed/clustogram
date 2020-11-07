@@ -1,4 +1,5 @@
-# clustogram
+# clustogram/ui
+Visualization for your beautiful Clusters
 
 ## Project setup
 ```
