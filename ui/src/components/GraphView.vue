@@ -1,17 +1,11 @@
 <template>
-    <h1>Miejsce na Twój {{ appName }}</h1>
+  <h1>Clustogram</h1>
 </template>
 
-<script>
-export default {
-  props: {
-    appName: String
-  }
-}
-</script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-<style scoped>
-h1 {
-  margin: 40px 0 0;
-}
-</style>
+export default defineComponent({
+  name: 'GraphView'
+});
+</script>
