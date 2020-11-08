@@ -5,7 +5,7 @@
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	@echo "Not implemented"; false
+	npm start
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false
@@ -16,13 +16,13 @@ env-down: ## tear down dev environment
 env-recreate: env-down env-up ## deconstruct current env and create another one
 
 build: setup ## create artifact
-	@echo "Not implemented"; false
+	npm run build
 
 lint: setup ## run static analysis
-	@echo "Not implemented"; false
+	npm run lint
 
 test: setup ## run all tests
-	@echo "Not implemented"; false
+	npm test
 
 container: build ## create container
 	#docker build -t lmap .
@@ -33,6 +33,7 @@ container: build ## create container
 .PHONY: setup
 
 setup:
+	npm install
 
 # Helpers
 # ###############
