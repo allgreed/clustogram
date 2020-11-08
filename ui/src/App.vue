@@ -1,21 +1,27 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <Graphview app-name="Clustogram"/>
+  <GraphView></GraphView>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+import GraphView from './components/GraphView.vue';
 
-import GraphView from './components/GraphView.vue'
-
-export default {
+export default defineComponent({
+  name: 'App',
   components: {
-    Graphview: GraphView
+    GraphView
   }
-}
+});
 </script>
 
 <style>
 #app {
-  font-family: Arial sans-serif;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
