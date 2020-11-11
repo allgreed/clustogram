@@ -1,11 +1,16 @@
 .DEFAULT_GOAL := help
 
+ifeq (run,$(firstword $(MAKECMDGOALS)))
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(RUN_ARGS):;@:)
+endif
+
 # Porcelain
 # ###############
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	@echo "Not implemented"; false
+	python main.py $(RUN_ARGS)
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false

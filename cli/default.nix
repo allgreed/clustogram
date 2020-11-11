@@ -7,6 +7,9 @@ let
     # obtain via `git ls-remote https://github.com/nixos/nixpkgs-channels nixos-unstable`
   };
   pkgs = import nixpkgs { config = {}; };
+  pythonEnv = pkgs.python38.withPackages(ps: with ps; [
+    pyyaml
+    ]);
 in
 pkgs.mkShell {
   buildInputs =
@@ -14,5 +17,7 @@ pkgs.mkShell {
   [
     git
     gnumake
+
+    pythonEnv
   ];
 }
