@@ -10,6 +10,7 @@ let
   pythonCore = pkgs.python38;
   pythonPkgs = python-packages: with python-packages; [
       flask
+      flask-cors
     ];
   myPython = pythonCore.withPackages pythonPkgs;
 in

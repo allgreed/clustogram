@@ -1,13 +1,11 @@
 .DEFAULT_GOAL := help
-export FLASK_APP=src/main.py
-export FLASK_RUN_PORT=8000
-
 # Porcelain
 # ###############
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	flask run
+	export FLASK_RUN_PORT=8000
+	python src/main.py </tmp/ble
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false
