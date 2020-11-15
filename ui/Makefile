@@ -7,14 +7,6 @@
 run: setup ## run the app
 	npm start
 
-env-up: ## set up dev environment
-	@echo "Not implemented"; false
-
-env-down: ## tear down dev environment
-	@echo "Not implemented"; false
-
-env-recreate: env-down env-up ## deconstruct current env and create another one
-
 build: setup ## create artifact
 	npm run build
 
@@ -24,16 +16,15 @@ lint: setup ## run static analysis
 test: setup ## run all tests
 	npm test
 
-container: build ## create container
-	#docker build -t lmap .
-	@echo "Not implemented"; false
-
 # Plumbing
 # ###############
 .PHONY: setup
 
-setup:
-	npm install
+setup: node_modules
+
+node_modules: package.json package-lock.json
+	npm ci
+	touch $@
 
 # Helpers
 # ###############
