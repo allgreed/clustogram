@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "entities": [
+    {
+      "name": "Test1",
+      "references": []
+    },
+    {
+      "name": "Test1A",
+      "references": [
+        {
+          "name": "Test1"
+        }
+      ]
+    },
+    {
+      "name": "Test1B",
+      "references": [
+        {
+          "name": "Test1"
+        }
+      ]
+    }
+  ]
+}
