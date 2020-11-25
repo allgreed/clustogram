@@ -4,8 +4,7 @@
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	export FLASK_RUN_PORT=8000
-	python src/main.py </tmp/ble
+	python src/main.py <./tmp/fake_graph.json
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false
