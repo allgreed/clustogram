@@ -1,4 +1,5 @@
 import sys
+import json
 
 from flask import Flask
 from flask_cors import CORS, cross_origin
@@ -14,7 +15,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/data')
 @cross_origin()
 def data_index():
-    my_output = eval(input_data)
+    my_output = json.loads(input_data)
     validate(
         instance=my_output,
         schema=get_json_content("../contracts/graph-to-ui.json")
