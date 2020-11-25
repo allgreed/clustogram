@@ -11,6 +11,7 @@ let
   pythonPkgs = python-packages: with python-packages; [
       flask
       flask-cors
+      jsonschema
     ];
   myPython = pythonCore.withPackages pythonPkgs;
 in
