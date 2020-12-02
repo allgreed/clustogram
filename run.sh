@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #TODO: does not work with multiple files
 
 nix-shell ./cli/default.nix --run "make -C cli run $(pwd)/$@" \
