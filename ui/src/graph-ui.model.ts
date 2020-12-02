@@ -3,9 +3,11 @@ export interface GraphToUiModel {
     entities: GraphEntity[];
 }
 
+export interface GraphReference {
+    name: string
+}
+
 export interface GraphEntity {
     name: string;
-    references: {
-        name: string;
-    }
+    references: GraphReference[]
 }

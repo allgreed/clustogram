@@ -17,12 +17,20 @@ export const GRAPH_LAYOUT_OPTIONS: CytoscapeOptions = {
         {
             selector: 'edge',
             style: {
-                'width': 1,
+                'width': 0.5,
                 'target-arrow-shape': 'triangle',
                 'line-color': '#9dbaea',
                 'target-arrow-color': '#9dbaea',
-                'curve-style': 'bezier'
+                'curve-style': 'bezier',
+                'arrow-scale': 0.4
             }
-        }
+        },
+        {
+            selector: 'node',
+            style: {
+                'content': 'data(label)',
+                'font-size': 4,
+            }
+        },
     ]
-}
+};
