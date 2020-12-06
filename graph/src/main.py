@@ -1,13 +1,15 @@
 import sys
 import json
+import os
 
 from flask import Flask
+from flask import render_template
 from flask_cors import CORS, cross_origin
 from jsonschema import validate
 
 from utils import get_json_content
 
-app = Flask('graph')
+app = Flask('graph', template_folder=os.environ['CLI_STATIC_CONTENT'])
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -22,10 +24,11 @@ def data_index():
     )
     return {'my data json': my_output}
 
-# TODO: serve static content on /
+
 @app.route('/')
 def index():
-    return {"Status": "ok"}
+    share = os.environ['CLI_STATIC_CONTENT']
+    return render_template("index.html", message=share)
 
 
 if __name__ == "__main__":
