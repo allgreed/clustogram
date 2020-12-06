@@ -3,23 +3,22 @@
   "entities": [
     {
       "name": "Test1",
-      "references": []
+      "references": [
+        {
+          "name": "Test1A"
+        },
+        {
+          "name": "Test1B"
+        }
+      ]
     },
     {
       "name": "Test1A",
-      "references": [
-        {
-          "name": "Test1"
-        }
-      ]
+      "references": []
     },
     {
       "name": "Test1B",
-      "references": [
-        {
-          "name": "Test1"
-        }
-      ]
+      "references": []
     }
   ]
 }
