@@ -4,11 +4,16 @@ import MOCK_JSON from '../../tests/graph-example.json';
 
 export class GraphDataService {
     getGraphElements(): Promise<ElementsDefinition> {
-        return Promise.resolve(this.mapResponseToGraphElements(MOCK_JSON as any));
+        return this.fetchData().then(this.mapResponseToGraphElements.bind(this));
     }
 
     private fetchData(): Promise<GraphToUiModel> {
-        return fetch('/output.json').then(({ json }) => json());
+        return fetch(process.env.VUE_APP_GRAPH_DATA_URL)
+            .then(({ json }) => json())
+            .catch(() => {
+                console.error('Graph Data not found, returning mock data...');
+                return MOCK_JSON;
+            });
     }
 
     private mapResponseToGraphElements(response: GraphToUiModel): ElementsDefinition {
