@@ -1,4 +1,6 @@
 .DEFAULT_GOAL := help
+export CLI_STATIC_CONTENT =  ???
+
 # Porcelain
 # ###############
 .PHONY: env-up env-down env-recreate container run build lint test
