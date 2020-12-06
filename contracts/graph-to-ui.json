@@ -17,6 +17,9 @@
                     "name":{
                         "type":"string"
                     },
+                    "kind":{
+                        "type":"string"
+                    },
                     "references":{
                         "type":"array",
                         "items":{
@@ -34,7 +37,8 @@
                 },
                 "required":[
                     "name",
-                    "references"
+                    "references",
+                    "kind"
                 ]
             }
         }
