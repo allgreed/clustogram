@@ -1,0 +1,236 @@
+[
+    {
+        "namespace": "Pod",
+        "description": "Pod is a collection of containers that can run on a host. This resource is created by clients and scheduled onto hosts.",
+        "kind": "Compute",
+        "icon": "resources\\pod.svg"
+    },
+    {
+        "namespace": "ReplicaSet",
+        "description": "ReplicaSet ensures that a specified number of pod replicas are running at any given time.",
+        "kind": "Compute",
+        "icon": "resources\\rs.svg"
+    },
+    {
+        "namespace": "Deployment",
+        "description": "Deployment enables declarative updates for Pods and ReplicaSets.",
+        "kind": "Compute",
+        "icon": "resources\\deploy.svg"
+    },
+    {
+        "namespace": "DaemonSet",
+        "description": "DaemonSet represents the configuration of a daemon set.",
+        "kind": "Compute",
+        "icon": "resources\\ds.svg"
+    },
+    {
+        "namespace": "Job",
+        "description": "Job represents the configuration of a single job.",
+        "kind": "Compute",
+        "icon": "resources\\job.svg"
+    },
+    {
+        "namespace": "CronJob",
+        "description": "A CronJob manages time based Job, namely: once at a specified point in time, repeatedly at a specified point in time",
+        "kind": "Compute",
+        "icon": "resources\\cronjob.svg"
+    },
+    {
+        "namespace": "StatefulSet",
+        "description": "StatefulSet represents a set of pods with consistent identities. Identities are defined as: network, storage.",
+        "kind": "Compute",
+        "icon": "resources\\sts.svg"
+    },
+    {
+        "namespace": "PersistentVolume",
+        "description": "is a storage resource provisioned by an administrator.",
+        "kind": "Storage",
+        "icon": "resources\\pv.svg"
+    },
+    {
+        "namespace": "PersistentVolumeClaim",
+        "description": "PersistentVolumeClaim is a user's request for and claim to a persistent volume.",
+        "kind": "Storage",
+        "icon": "resources\\pvc.svg"
+    },
+    {
+        "namespace": "StorageClass",
+        "description": "StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.",
+        "kind": "Storage",
+        "icon": "resources\\sc.svg"
+    },
+    {
+        "namespace": "Ingress",
+        "description": "Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend. An Ingress can be configured to give services externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting etc.",
+        "kind": "Network",
+        "icon": "resources\\ing.svg"
+    },
+    {
+        "namespace": "Service",
+        "description": "Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.",
+        "kind": "Network",
+        "icon": "resources\\svc.svg"
+    },
+    {
+        "namespace": "Endpoint",
+        "description": "Endpoints is a collection of endpoints that implement the actual service.",
+        "kind": "Network",
+        "icon": "resources\\ep.svg"
+    },
+    {
+        "namespace": "NetworkPolicy",
+        "description": "NetworkPolicy describes what network traffic is allowed for a set of Pods.",
+        "kind": "Network",
+        "icon": "resources\\netpol.svg"
+    },
+    {
+        "namespace": "ServiceAccount",
+        "description": "binds together: a name, a principal that can be authenticated and authorized * a set of secrets.",
+        "kind": "RBAC model",
+        "icon": "resources\\sa.svg"
+    },
+    {
+        "namespace": "User",
+        "description": "Human user of Kubernetes cluster.",
+        "kind": "RBAC model",
+        "icon": "resources\\user.svg"
+    },
+    {
+        "namespace": "Group",
+        "description": "Set of Service Accounts or Users.",
+        "kind": "RBAC model",
+        "icon": "resources\\group.svg"
+    },
+    {
+        "namespace": "Role",
+        "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.",
+        "kind": "RBAC model",
+        "icon": "resources\\role.svg"
+    },
+    {
+        "namespace": "ClusterRole",
+        "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.",
+        "kind": "RBAC model",
+        "icon": "resources\\c-role.svg"
+    },
+    {
+        "namespace": "ClusterRoleBinding",
+        "description": "A cluster role binding grants the permissions defined in a role/clusterrole to a user or set of users. Permissions are granted cluster-wide.",
+        "kind": "RBAC model",
+        "icon": "resources\\crb.svg"
+    },
+    {
+        "namespace": "RoleBinding",
+        "description": "A role binding grants the permissions defined in a role/clusterrole to a user or set of users. Permissions are granted within a namespace.",
+        "kind": "RBAC model",
+        "icon": "resources\\rb.svg"
+    },
+    {
+        "namespace": "ConfigMap",
+        "description": "ConfigMap holds configuration data for pods to consume.",
+        "kind": "Pods Configuration",
+        "icon": "resources\\cm.svg"
+    },
+    {
+        "namespace": "Secret",
+        "description": "Secret holds secret data of a certain type.",
+        "kind": "Pods Configuration",
+        "icon": "resources\\secret.svg"
+    },
+    {
+        "namespace": "LimitRange",
+        "description": "LimitRange sets resource usage limits for each kind of resource in a Namespace.",
+        "kind": "Cluster configuration",
+        "icon": "resources\\limits.svg"
+    },
+    {
+        "namespace": "Quota",
+        "description": "ResourceQuota sets aggregate quota restrictions enforced per namespace.",
+        "kind": "Cluster configuration",
+        "icon": "resources\\quota.svg"
+    },
+    {
+        "namespace": "HorizontalPodAutoscaler",
+        "description": "Configuration of a horizontal pod autoscaler.",
+        "kind": "Cluster configuration",
+        "icon": "resources\\hpa.svg"
+    },
+    {
+        "namespace": "CustomResourceDefinition",
+        "description": "Extension of Kubernetes API.",
+        "kind": "Others",
+        "icon": "resources\\crd.svg"
+    },
+    {
+        "namespace": "PodSecurityPolicy",
+        "description": "Governs the ability to make requests that affect the Security Context that will be applied to a pod and container.",
+        "kind": "Others",
+        "icon": "resources\\psp.svg"
+    },
+    {
+        "namespace": "Cluster",
+        "description": "Kubernetes cluster.",
+        "kind": "Infrastructure components",
+        "icon": "resources\\cluster.svg"
+    },
+    {
+        "namespace": "Master",
+        "description": "Kubernetes Control Plane.",
+        "kind": "Infrastructure components",
+        "icon": "resources\\control-plane.svg"
+    },
+    {
+        "namespace": "Node",
+        "description": "Worker machine in Kubernetes cluster.",
+        "kind": "Infrastructure components",
+        "icon": "resources\\node.svg"
+    },
+    {
+        "namespace": "ETCD",
+        "description": "Kubernetes’s backing store.",
+        "kind": "Infrastructure components",
+        "icon": "resources\\etcd.svg"
+    },
+    {
+        "namespace": "K8s API Server",
+        "description": "Kubernetes API.",
+        "kind": "Control Plane components",
+        "icon": "resources\\api.svg"
+    },
+    {
+        "namespace": "Controller Manager",
+        "description": "Kubernetes controller manager.",
+        "kind": "Control Plane components",
+        "icon": "resources\\c-m.svg"
+    },
+    {
+        "namespace": "Scheduler",
+        "description": "In charge of ensuring Pods placement.",
+        "kind": "Control Plane components",
+        "icon": "resources\\sched.svg"
+    },
+    {
+        "namespace": "Cloud Controller Manager",
+        "description": "Optional and External Cloud controller (experimental).",
+        "kind": "Control Plane components",
+        "icon": "resources\\c-c-m.svg"
+    },
+    {
+        "namespace": "Kubelet",
+        "description": "he kubelet is the primary \"node agent\" that runs on each node.",
+        "kind": "Control Plane components",
+        "icon": "resources\\kubelet.svg"
+    },
+    {
+        "namespace": "Kube-proxy",
+        "description": "The Kubernetes network proxy runs on each node. This reflects services as defined in the Kubernetes API on each node.",
+        "kind": "Control Plane components",
+        "icon": "resources\\k-proxy.svg"
+    },
+    {
+        "namespace": "Namespace",
+        "description": "Namespace provides a scope for Names. Use of multiple namespaces is optional.",
+        "kind": "Groups and links",
+        "icon": "resources\\ns.svg"
+    }
+]
