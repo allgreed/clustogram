@@ -9,5 +9,6 @@ export interface GraphReference {
 
 export interface GraphEntity {
     name: string;
+    kind: string;
     references: GraphReference[]
 }
