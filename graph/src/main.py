@@ -1,3 +1,4 @@
+import json
 import sys
 import os
 
@@ -15,9 +16,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/data')
 @cross_origin()
 def data_index():
-    content = get_json_content(os.path.join(ui_static_content, "fake_graph.json"))
-    print(content)
-    my_output = content
+    my_output = json.loads(input_data)
     validate(
         instance=my_output,
         schema=get_json_content("../contracts/graph-to-ui.json")
@@ -31,7 +30,8 @@ def index():
 
 
 if __name__ == "__main__":
-    ui_static_content = sys.argv[1]
+    input_data = sys.stdin.read()
+    ui_static_content = os.environ["UI_STATIC_CONTENT"]
     app.template_folder = ui_static_content
     app.static_folder = os.path.join(ui_static_content, "static")
     app.run(port='8000')

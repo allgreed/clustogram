@@ -6,7 +6,7 @@ export UI_STATIC_CONTENT = $(PWD)/tmp
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	python src/main.py $(UI_STATIC_CONTENT)
+	python src/main.py <./tmp/fake_graph.json
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false
