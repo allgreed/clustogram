@@ -9,6 +9,8 @@ let
   pkgs = import nixpkgs { config = {}; };
   pythonEnv = pkgs.python38.withPackages(ps: with ps; [
     pyyaml
+    pyhcl
+    stringcase
     ]);
 in
 pkgs.mkShell {

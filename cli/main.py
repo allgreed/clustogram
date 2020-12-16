@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import sys
-import yaml
 import os.path
+import yaml
+import hcl
+import stringcase
 
 
 def process_yaml(file):
@@ -10,7 +12,22 @@ def process_yaml(file):
 
 
 def process_hcl(file):
-    pass
+    document = hcl.load(file)["resource"]
+
+    k8sObjects = []
+
+    for resource in document:
+        resourceNameWithoutKubernetesPrefix = resource[resource.startswith("kubernetes_") and len("kubernetes_"):]
+        resourceName = stringcase.pascalcase(resourceNameWithoutKubernetesPrefix).replace("Api", "API")
+
+        resourceData = list(document[resource].values())[0]
+        obj = {
+            "kind": resourceName,
+            **resourceData
+        }
+        k8sObjects.append(obj)
+
+    return [k8sObjects]
 
 
 def main(args):
@@ -19,9 +36,9 @@ def main(args):
         with open(filename) as f:
             ext = os.path.splitext(filename)[1].lower()
             if ext in [".yml", ".yaml"]:
-                k8sObjects.append(process_yaml(f))
+                k8sObjects.extend(process_yaml(f))
             elif ext == ".tf":
-                k8sObjects.append(process_hcl(f))
+                k8sObjects.extend(process_hcl(f))
             else:
                 print("Unknown filetype")
     print({
