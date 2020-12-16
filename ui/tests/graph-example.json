@@ -3,6 +3,7 @@
   "entities": [
     {
       "name": "Test1",
+      "kind": "Service",
       "references": [
         {
           "name": "Test1A"
@@ -14,10 +15,12 @@
     },
     {
       "name": "Test1A",
+      "kind": "PersistentVolume",
       "references": []
     },
     {
       "name": "Test1B",
+      "kind": "Job",
       "references": []
     }
   ]

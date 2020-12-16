@@ -1,6 +1,7 @@
 import { EdgeDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
 import { GraphEntity, GraphToUiModel } from '@/graph-ui.model';
 import MOCK_JSON from '../../tests/graph-example.json';
+import { getClassSelectorFromKind } from '@/graph-ui.config';
 
 export class GraphDataService {
     getGraphElements(): Promise<ElementsDefinition> {
@@ -24,12 +25,15 @@ export class GraphDataService {
     }
 
     private mapGraphUiModelToNodeDefinitions(response: GraphToUiModel): NodeDefinition[] {
-        return response.entities.map((entity) => ({
-            data: {
-                id: entity.name,
-                label: entity.name
-            }
-        }));
+        return response.entities.map((entity) => {
+            return ({
+                data: {
+                    id: entity.name,
+                    label: entity.name
+                },
+                classes: getClassSelectorFromKind(entity.kind)
+            });
+        });
     }
 
     private mapGraphUiModelToEdgeDefinitions(response: GraphToUiModel): EdgeDefinition[] {
