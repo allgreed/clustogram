@@ -1,7 +1,8 @@
-import sys
 import json
+import sys
+import os
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS, cross_origin
 from jsonschema import validate
 
@@ -22,15 +23,17 @@ def data_index():
     )
     return {'my data json': my_output}
 
-# TODO: serve static content on /
+
 @app.route('/')
 def index():
-    return {"Status": "ok"}
+    return render_template("index.html", path_to_static=ui_static_content)
 
 
 if __name__ == "__main__":
     input_data = sys.stdin.read()
-    print(input_data)
+    ui_static_content = os.environ["UI_STATIC_CONTENT"]
+    app.template_folder = ui_static_content
+    app.static_folder = os.path.join(ui_static_content, "static")
     app.run(port='8000')
 
 
