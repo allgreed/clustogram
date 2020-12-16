@@ -22,7 +22,6 @@ def process_hcl(file):
 
         resourceData = list(document[resource].values())[0]
         obj = {
-            "apiVersion": "v1",
             "kind": resourceName,
             **resourceData
         }
