@@ -1,12 +1,11 @@
 .DEFAULT_GOAL := help
-export UI_STATIC_CONTENT = $(PWD)/tmp
 
 # Porcelain
 # ###############
 .PHONY: env-up env-down env-recreate container run build lint test
 
 run: setup ## run the app
-	python src/main.py <./tmp/fake_graph.json
+	UI_STATIC_CONTENT=$${UI_STATIC_CONTENT:-$(PWD)/tmp} python src/main.py <./tmp/fake_graph.json
 
 env-up: ## set up dev environment
 	@echo "Not implemented"; false

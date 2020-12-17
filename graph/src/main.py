@@ -26,14 +26,15 @@ def data_index():
 
 @app.route('/')
 def index():
+    # wtf why is this set? o.0
     return render_template("index.html", path_to_static=ui_static_content)
 
 
 if __name__ == "__main__":
     input_data = sys.stdin.read()
+    # TODO: guard against this not being set?
     ui_static_content = os.environ["UI_STATIC_CONTENT"]
+    print(ui_static_content)
     app.template_folder = ui_static_content
-    app.static_folder = os.path.join(ui_static_content, "static")
+    app.static_folder = os.path.join(ui_static_content)
     app.run(port='8000')
-
-
