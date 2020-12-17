@@ -24,8 +24,13 @@ def data_index():
     return {'my data json': my_output}
 
 
-@app.route('/')
-def index():
+@app.route("/<path:filename>")
+def index(filename):
+    return send_from_directory(ui_static_content, filename)
+
+
+@app.route("/")
+def _index():
     return send_from_directory(ui_static_content, "index.html")
 
 
@@ -36,7 +41,7 @@ if __name__ == "__main__":
     except KeyError:
         print("Not found the environment variable UI_STATIC_CONTENT")
         sys.exit(1)
-    app.static_folder = os.path.join(ui_static_content, "static")
+    app.static_folder = os.path.join(ui_static_content)
     print(ui_static_content)
     print(app.static_folder)
     app.run(port='8000')
