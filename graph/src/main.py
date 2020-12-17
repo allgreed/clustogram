@@ -2,7 +2,7 @@ import json
 import sys
 import os
 
-from flask import Flask, render_template
+from flask import Flask, send_from_directory
 from flask_cors import CORS, cross_origin
 from jsonschema import validate
 
@@ -26,15 +26,17 @@ def data_index():
 
 @app.route('/')
 def index():
-    # wtf why is this set? o.0
-    return render_template("index.html", path_to_static=ui_static_content)
+    return send_from_directory(ui_static_content, "index.html")
 
 
 if __name__ == "__main__":
-    input_data = sys.stdin.read()
-    # TODO: guard against this not being set?
-    ui_static_content = os.environ["UI_STATIC_CONTENT"]
+    try:
+        input_data = sys.stdin.read()
+        ui_static_content = os.environ["UI_STATIC_CONTENT"]
+    except KeyError:
+        print("Not found the environment variable UI_STATIC_CONTENT")
+        sys.exit(1)
+    app.static_folder = os.path.join(ui_static_content, "static")
     print(ui_static_content)
-    app.template_folder = ui_static_content
-    app.static_folder = os.path.join(ui_static_content)
+    print(app.static_folder)
     app.run(port='8000')
