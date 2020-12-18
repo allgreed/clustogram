@@ -7,8 +7,7 @@
 run: setup ## run the app
 	npm start
 
-build: setup ## create artifact
-	npm run build
+build: setup dist ## create artifact
 
 lint: setup ## run static analysis
 	npm run lint
@@ -19,6 +18,9 @@ test: setup ## run all tests
 # Plumbing
 # ###############
 .PHONY: setup
+
+dist: src
+	npm run build
 
 setup: node_modules
 
