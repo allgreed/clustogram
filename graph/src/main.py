@@ -21,7 +21,7 @@ def data_index():
         instance=my_output,
         schema=get_json_content("../contracts/graph-to-ui.json")
     )
-    return {'my data json': my_output}
+    return my_output
 
 
 @app.route("/<path:filename>")
