@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "vue-cli-service build",
-    "test": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "start": "vue-cli-service serve --port=4200"
+    "build": "npx vue-cli-service build",
+    "test": "npx vue-cli-service test:unit",
+    "lint": "npx vue-cli-service lint",
+    "start": "npx vue-cli-service serve --port=4200"
   },
   "dependencies": {
     "core-js": "^3.6.5",
