@@ -1,4 +1,27 @@
 {
   "version": 1,
-  "entities": []
+  "entities": [
+    {
+      "name": "Ble1",
+      "kind": "Service",
+      "references": [
+        {
+          "name": "Fuj2"
+        },
+        {
+          "name": "Kaczang"
+        }
+      ]
+    },
+    {
+      "name": "Kaczang",
+      "kind": "PersistentVolume",
+      "references": []
+    },
+    {
+      "name": "Fuj2",
+      "kind": "User",
+      "references": []
+    }
+  ]
 }
