@@ -10,8 +10,9 @@ export class GraphDataService {
 
     private fetchData(): Promise<GraphToUiModel> {
         return fetch(process.env.VUE_APP_GRAPH_DATA_URL)
-            .then(({ json }) => json())
-            .catch(() => {
+            .then((response) => response.json())
+            .catch((err) => {
+                console.error(err);
                 console.error('Graph Data not found, returning mock data...');
                 return MOCK_JSON;
             });
