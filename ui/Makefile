@@ -19,7 +19,7 @@ test: setup ## run all tests
 # ###############
 .PHONY: setup
 
-dist: src
+dist: $(shell find src -type f)
 	npm run build
 
 setup: node_modules
