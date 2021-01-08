@@ -45,9 +45,13 @@ class Graph:
                 name = object["metadata"]["name"]
                 self.found_references = self._find_val_in_nested_dict(
                     object, name, searched_val=entity["name"])
-        self._set_service_references()
-        self._set_deployment_references()
-        self._set_base_references()
+        try:
+            self._set_service_references()
+            self._set_deployment_references()
+            self._set_base_references()
+        except KeyError:
+            pass
+
 
     def _set_base_references(self):
         """Set references for all type objects."""
@@ -61,9 +65,10 @@ class Graph:
             for referential_set in self.found_references:
                 ref_ob, ob_name, ob_key_path=referential_set
                 if ob_key_path not in paths_to_skip:
+                    ref = {"name": ref_ob}
                     if entity["name"] == ob_name and ref_ob in self.entities_names:
                         entity["references"].append(
-                            {"name": ref_ob})
+                            ref) if ref not in entity["references"] else entity["references"]
 
     def _set_deployment_references(self):
         """Set references for deployment objects."""
@@ -71,9 +76,10 @@ class Graph:
             if entity["kind"] == "Deployment":
                 ob = self.get_ob_by_name(name=entity["name"])
                 labels = ob["spec"]["template"]["metadata"]["labels"]
+                ref = {"name": labels["app"]}
                 if labels["app"] in self.entities_names:
                     entity["references"].append(
-                        {"name": labels["app"]})
+                        ref) if ref not in entity["references"] else entity["references"]
 
     def _set_service_references(self):
         """Set references for service objects."""
@@ -81,10 +87,11 @@ class Graph:
             if entity["kind"] == "Service":
                 ob = self.get_ob_by_name(entity["name"])
                 labels = ob["spec"]["selector"]
+                ref = {"name": labels["app"]}
                 if labels["app"] in self.entities_names:
                     entity["references"].append(
-                        {"name": labels["app"]}
-                    )
+                        ref) if ref not in entity["references"] else entity["references"]
+
 
     def get_ob_by_name(self, name):
         """Get the object from objects list."""
