@@ -27,20 +27,39 @@ def process_hcl(file):
         }
         k8sObjects.append(obj)
 
-    return [k8sObjects]
+    return k8sObjects
 
+def process_files(filelist):
+    k8sObjects = []
+
+    supportedExtensions = {
+        ".yml":  process_yaml,
+        ".yaml": process_yaml,
+        ".tf":  process_hcl
+    }
+
+    for filename in filelist:
+        ext = os.path.splitext(filename)[1].lower()
+        if ext in supportedExtensions.keys():
+            with open(filename) as f:
+                k8sObjects.extend(supportedExtensions[ext](f))
+        else:
+            print(f"Unknown filetype: {filename}")
+    return k8sObjects
 
 def main(args):
-    k8sObjects = []
-    for filename in args[1:]:
-        with open(filename) as f:
-            ext = os.path.splitext(filename)[1].lower()
-            if ext in [".yml", ".yaml"]:
-                k8sObjects.extend(process_yaml(f))
-            elif ext == ".tf":
-                k8sObjects.extend(process_hcl(f))
-            else:
-                print("Unknown filetype")
+    filelist = []
+
+    for path in args[1:]:
+        if os.path.isfile(path):
+            filelist.append(path)
+        if os.path.isdir(path):
+            for root, _, files in os.walk(path):
+                for name in files:
+                    filelist.append(os.path.join(root, name))
+
+    k8sObjects = process_files(filelist)
+
     print({
         "version": 0.1,
         "kubernetesObjects": k8sObjects
