@@ -2,6 +2,7 @@
 
 import sys
 import os.path
+import json
 import yaml
 import hcl
 import stringcase
@@ -41,10 +42,13 @@ def main(args):
                 k8sObjects.extend(process_hcl(f))
             else:
                 print("Unknown filetype")
-    print({
-        "version": 0.1,
+    
+    output = {
+        "version": 1,
         "kubernetesObjects": k8sObjects
-    })
+    }
+
+    print(json.dumps(output))
 
 
 if __name__ == "__main__":
