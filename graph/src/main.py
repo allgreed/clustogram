@@ -17,9 +17,11 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/data')
 @cross_origin()
 def data_index():
+    contract_location = "../contracts/graph-to-ui.json" if os.path.isfile("../contracts/graph-to-ui.json") else "./contracts/graph-to-ui.json"
+
     validate(
         instance=my_output,
-        schema=get_json_content("../contracts/graph-to-ui.json")
+        schema=get_json_content(contract_location)
     )
     return my_output
 
