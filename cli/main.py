@@ -2,6 +2,7 @@
 
 import sys
 import os.path
+import json
 import yaml
 import hcl
 import stringcase
@@ -60,10 +61,12 @@ def main(args):
 
     k8sObjects = process_files(filelist)
 
-    print({
-        "version": 0.1,
+    print(json.dumps(
+        {
+        "version": 1,
         "kubernetesObjects": k8sObjects
-    })
+        }
+    ))
 
 
 if __name__ == "__main__":
