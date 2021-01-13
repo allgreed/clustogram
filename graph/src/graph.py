@@ -1,57 +1,120 @@
-class Graph:
+import pprint
 
+pp = pprint.PrettyPrinter(indent=1)
+
+class Entity:
+
+    def __init__(self, cli_object):
+        self.cli_object = cli_object
+        self.name = cli_object["metadata"]["name"]
+        self.kind = cli_object["kind"]
+        self.namespace = ""
+        self.match_labels = {}  # only for Deployment and Service object
+        self.label_app = {}
+        self.references = []
+
+        if "namespace" in cli_object["metadata"].keys():
+            if cli_object["metadata"]["namespace"] != "default":
+                self.namespace = cli_object["metadata"]["namespace"]
+
+        self.label_app = cli_object["metadata"]["labels"]
+
+        # LABELS MATCHER
+        if self.kind == "Deployment":
+            try:
+                self.match_labels = cli_object["spec"]["template"]["metadata"]["labels"]
+            except KeyError:
+                pass
+        elif self.kind == "Service":
+            try:
+                self.match_labels = cli_object["spec"]["selector"]
+            except KeyError:
+                pass
+        self.match_labels.pop("name", None)
+
+    @property
+    def full_name(self):
+        """namespace::kind::name  ||   kind::name"""
+        return "{}::{}::{}".format(
+            self.namespace, self.kind, self.name) if self.namespace else \
+            "{}::{}".format(self.kind, self.name)
+
+    @property
+    def display_name(self):
+        """namespace::name || name"""
+        return "{}::{}".format(
+            self.namespace, self.name) if self.namespace else self.name
+
+    def add_ref(self, ref):
+        """Add new reference."""
+        if ref not in self.references:
+            self.references.append(ref)
+
+    def get_graph_entity (self):
+        """Get entity as a dict with only required keys to produce graph."""
+        return {
+            "name": self.display_name,
+            "kind": self.kind,
+            "references": self.references
+        }
+
+
+class Graph:
     def __init__(self, cli_json) -> None:
         """Class instantiation."""
-        self.entities = [] # type: List
-        self.found_references = []  # type: List
+        self.entities = []  # type: List(Entity)
+        self.found_references = []  # type: List(dict)
         self.cli_json = cli_json
-        self.cli_objects = cli_json['kubernetesObjects']  # type: List
 
     @property
     def entities_names(self):
-        """Names of parsed entities."""
-        names = []
-        for entity in self.entities:
-            names.append(entity["name"])
-        return names
+        """Get display names of parsed entities."""
+        return [en.display_name for en in self.entities]
+
+    def get_entities_with_app_label(self, match):
+        """Get entities that have 'match' as a subset of ["metadata"]["labels"].
+        To be matched with services and deployment objects."""
+        print(match)
+        for en in self.entities:
+            print(en.label_app)
+        return [en.display_name for en in self.entities if match.items() <= en.label_app.items()]
+
+    def get_graph_entities(self):
+        """Get entities as a dict to produce graph"""
+        return [en.get_graph_entity() for en in self.entities]
 
     def produce_graph(self):
         """Define entities with references."""
         graph_data = {}
 
-        for ob in self.cli_objects:
-            entity = {}
-            entity.setdefault("name", ob["metadata"]["name"])
-            entity.setdefault("kind", ob["kind"])
+        for ob in self.cli_json['kubernetesObjects']:
+            entity = Entity(ob)
             self.entities.append(entity)
 
         self._find_references()
+        #pp.pprint(self.found_references)
 
         graph_data.setdefault("version", self.cli_json["version"] )
-        graph_data.setdefault("entities", self.entities)
+        graph_data.setdefault("entities", self.get_graph_entities())
 
+        pp.pprint(graph_data)
         return graph_data
 
     def _find_references(self):
         """ Find references between objects.
 
         Search for entity name in other objects
-        and assume it could be arelation between them.
+        and assume it could be a relation between them.
 
         """
         for entity in self.entities:
-            entity.setdefault("references", [])
-            for object in self.cli_objects:
-                name = object["metadata"]["name"]
+            for en_ob in self.entities:
+                name = en_ob.cli_object["metadata"]["name"]
                 self.found_references = self._find_val_in_nested_dict(
-                    object, name, searched_val=entity["name"])
-        try:
-            self._set_service_references()
-            self._set_deployment_references()
-            self._set_base_references()
-        except KeyError:
-            pass
+                    en_ob.cli_object, name, searched_val=entity.name)
 
+        self._set_dep_and_serv_references()
+        self._set_base_references()
 
     def _set_base_references(self):
         """Set references for all type objects."""
@@ -63,43 +126,23 @@ class Graph:
         ]
         for entity in self.entities:
             for referential_set in self.found_references:
-                ref_ob, ob_name, ob_key_path=referential_set
+                ref_ob, ob_name, ob_key_path = referential_set
                 if ob_key_path not in paths_to_skip:
-                    ref = {"name": ref_ob}
-                    if entity["name"] == ob_name and ref_ob in self.entities_names:
-                        entity["references"].append(
-                            ref) if ref not in entity["references"] else entity["references"]
+                    ref = {"name": ob_name}     # add namespace to ob_name? (in  self.found_references??)
+                    if(entity.name == ref_ob ) and ob_name in self.entities_names:
+                        #  name or lub też claimName >> "claimName"  hahha
+                        entity.add_ref(ref)
 
-    def _set_deployment_references(self):
-        """Set references for deployment objects."""
+    def _set_dep_and_serv_references(self):
+        """Set references for deployment an service objects."""
+        # TODO:  ok for service and deployment? or only service?
         for entity in self.entities:
-            if entity["kind"] == "Deployment":
-                ob = self.get_ob_by_name(name=entity["name"])
-                labels = ob["spec"]["template"]["metadata"]["labels"]
-                ref = {"name": labels["app"]}
-                if labels["app"] in self.entities_names:
-                    entity["references"].append(
-                        ref) if ref not in entity["references"] else entity["references"]
-
-    def _set_service_references(self):
-        """Set references for service objects."""
-        for entity in self.entities:
-            if entity["kind"] == "Service":
-                ob = self.get_ob_by_name(entity["name"])
-                labels = ob["spec"]["selector"]
-                ref = {"name": labels["app"]}
-                if labels["app"] in self.entities_names:
-                    entity["references"].append(
-                        ref) if ref not in entity["references"] else entity["references"]
-
-
-    def get_ob_by_name(self, name):
-        """Get the object from objects list."""
-        for ob in self.cli_objects:
-            if ob["metadata"]["name"] == name:
-                return ob
-            else:
-                None
+            if entity.match_labels:
+                en_names = self.get_entities_with_app_label(entity.match_labels)
+                for en_display_name in en_names:
+                    if entity.display_name != en_display_name:
+                        ref = {"name": en_display_name}
+                        entity.add_ref(ref)
 
     def _find_val_in_nested_dict(self, nested_dict, ob_to_search, searched_val, prior_keys=[], found = []):
         """Find all occurrences of a given object name in a set of objects.
@@ -114,6 +157,7 @@ class Graph:
         Returns:
             found (list): set of founded occurrences [searched_val, ob_to_search, key_path_str]
         """
+        # TODO: get namespace from root object ?? // refactor
         for key, value in nested_dict.items():
             current_key_path = prior_keys + [key]
             key_path_str = ''.join('[\'{}\']'.format(key) for key in current_key_path)
@@ -124,6 +168,6 @@ class Graph:
                     if isinstance(item, dict):
                         self._find_val_in_nested_dict(item, ob_to_search, searched_val, current_key_path, found)
             else:
-                if key == "name" and value == searched_val:
+                if (key == "name" or key =="claimName") and value == searched_val:
                     found.append([searched_val, ob_to_search, key_path_str])
         return found
