@@ -9,29 +9,28 @@ class Entity:
         self.name = cli_object["metadata"]["name"]
         self.kind = cli_object["kind"]
         self.namespace = ""
-        self.match_labels = ""  # only for Deployment and Service object
-        self.label_app = ""  # for other objects (label_app to be matched to service/deployment ob) ?
+        self.match_labels = {}  # only for Deployment and Service object
+        self.label_app = {}
         self.references = []
 
         if "namespace" in cli_object["metadata"].keys():
             if cli_object["metadata"]["namespace"] != "default":
                 self.namespace = cli_object["metadata"]["namespace"]
 
-        if "app" in cli_object["metadata"]["labels"].keys():
-            self.label_app = cli_object["metadata"]["labels"]["app"]
+        self.label_app = cli_object["metadata"]["labels"]
 
         # LABELS MATCHER
-        # we consider only possible references under "app" field
         if self.kind == "Deployment":
             try:
-                self.match_labels = cli_object["spec"]["template"]["metadata"]["labels"]["app"]
+                self.match_labels = cli_object["spec"]["template"]["metadata"]["labels"]
             except KeyError:
                 pass
         elif self.kind == "Service":
             try:
-                self.match_labels = cli_object["spec"]["selector"]["app"]
+                self.match_labels = cli_object["spec"]["selector"]
             except KeyError:
                 pass
+        self.match_labels.pop("name", None)
 
     @property
     def full_name(self):
@@ -72,13 +71,13 @@ class Graph:
         """Get display names of parsed entities."""
         return [en.display_name for en in self.entities]
 
-    def get_entities_with_app_label(self, app_value):
-        """Get entities that have app_value under field
-        ["metadata"]["labels"]["app"].
-
+    def get_entities_with_app_label(self, match):
+        """Get entities that have 'match' as a subset of ["metadata"]["labels"].
         To be matched with services and deployment objects."""
-        #  TODO: which entities should be taken? all of them???
-        return [en.display_name for en in self.entities if en.label_app == app_value]
+        print(match)
+        for en in self.entities:
+            print(en.label_app)
+        return [en.display_name for en in self.entities if match.items() <= en.label_app.items()]
 
     def get_graph_entities(self):
         """Get entities as a dict to produce graph"""
@@ -138,12 +137,12 @@ class Graph:
         """Set references for deployment an service objects."""
         # TODO:  ok for service and deployment? or only service?
         for entity in self.entities:
-            en_names = self.get_entities_with_app_label(
-                entity.match_labels)
-            for en_display_name in en_names:
-                if entity.display_name != en_display_name:
-                    ref = {"name": en_display_name}
-                    entity.add_ref(ref)
+            if entity.match_labels:
+                en_names = self.get_entities_with_app_label(entity.match_labels)
+                for en_display_name in en_names:
+                    if entity.display_name != en_display_name:
+                        ref = {"name": en_display_name}
+                        entity.add_ref(ref)
 
     def _find_val_in_nested_dict(self, nested_dict, ob_to_search, searched_val, prior_keys=[], found = []):
         """Find all occurrences of a given object name in a set of objects.
