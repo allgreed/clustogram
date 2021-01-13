@@ -45,7 +45,7 @@ def process_files(filelist):
             with open(filename) as f:
                 k8sObjects.extend(supportedExtensions[ext](f))
         else:
-            print(f"Unknown filetype: {filename}")
+            print(f"Unknown filetype: {filename}", file=sys.stderr)
     return k8sObjects
 
 def main(args):
