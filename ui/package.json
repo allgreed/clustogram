@@ -12,10 +12,12 @@
     "core-js": "^3.6.5",
     "cytoscape": "^3.17.0",
     "cytoscape-dagre": "^2.3.1",
+    "file-saver": "^2.0.5",
     "vue": "^3.0.0"
   },
   "devDependencies": {
     "@types/cytoscape": "^3.14.9",
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",

@@ -2,6 +2,8 @@ import { EdgeDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
 import { GraphEntity, GraphToUiModel } from '@/graph-ui.model';
 import MOCK_JSON from '../../tests/graph-example.json';
 import { getClassSelectorFromKind } from '@/graph-ui.config';
+import { ErrorHandlerService } from '@/services/error-handler-service';
+import { HttpClientService } from '@/services/http-client.service';
 
 export class GraphDataService {
     getGraphElements(): Promise<ElementsDefinition> {
@@ -9,11 +11,10 @@ export class GraphDataService {
     }
 
     private fetchData(): Promise<GraphToUiModel> {
-        return fetch(process.env.VUE_APP_GRAPH_DATA_URL)
+        return HttpClientService.get(process.env.VUE_APP_GRAPH_DATA_URL)
             .then((response) => response.json())
-            .catch((err) => {
-                console.error(err);
-                console.error('Graph Data not found, returning mock data...');
+            .catch(() => {
+                ErrorHandlerService.handleError({message: 'Graph Data not found, returning mock data...'});
                 return MOCK_JSON;
             });
     }

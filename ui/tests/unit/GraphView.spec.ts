@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import GraphView from '@/components/GraphView.vue';
 import { ElementsDefinition } from 'cytoscape';
 
+
 jest.mock('@/services/graph-data.service', () => {
     return {
         GraphDataService: jest.fn().mockImplementation(() => {

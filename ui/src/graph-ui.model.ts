@@ -12,3 +12,5 @@ export interface GraphEntity {
     kind: string;
     references: GraphReference[]
 }
+
+export type LoadStatus = 'idle' | 'loading' | 'error'
