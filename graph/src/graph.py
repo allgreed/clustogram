@@ -11,6 +11,7 @@ class Entity:
         self.namespace = ""
         self.match_labels = {}  # only for Deployment and Service object
         self.label_app = {}
+        self.label_role = ''
         self.references = []
 
         if "namespace" in cli_object["metadata"].keys():
@@ -28,9 +29,20 @@ class Entity:
         elif self.kind == "Service":
             try:
                 self.match_labels = cli_object["spec"]["selector"]
+                #self.match_labels.pop("name", None)
             except KeyError:
                 pass
-        self.match_labels.pop("name", None)
+        elif self.kind == "Ingress":
+            try:
+                self.match_labels = cli_object["spec"]["rules"][0]["http"]["paths"][0]["backend"]["serviceName"]
+                print("MATCH  serviceName:", self.match_labels, "for object ", self.full_name)
+            except KeyError:
+                pass
+
+        try:
+            self.label_role = cli_object["metadata"]["labels"]["role"]
+        except KeyError:
+            pass
 
     @property
     def full_name(self):
@@ -71,7 +83,14 @@ class Graph:
         """Get display names of parsed entities."""
         return [en.display_name for en in self.entities]
 
-    def get_entities_with_app_label(self, match):
+    def get_entity_display_name(self, name):
+        """Get display name of given entity."""
+        for en in self.entities:
+            if en.name == name:
+                return en.display_name
+        raise ValueError
+
+    def get_entities_with_label(self, match):
         """Get entities that have 'match' as a subset of ["metadata"]["labels"].
         To be matched with services and deployment objects."""
         print(match)
@@ -92,7 +111,7 @@ class Graph:
             self.entities.append(entity)
 
         self._find_references()
-        #pp.pprint(self.found_references)
+        pp.pprint(self.found_references)
 
         graph_data.setdefault("version", self.cli_json["version"] )
         graph_data.setdefault("entities", self.get_graph_entities())
@@ -128,21 +147,34 @@ class Graph:
             for referential_set in self.found_references:
                 ref_ob, ob_name, ob_key_path = referential_set
                 if ob_key_path not in paths_to_skip:
-                    ref = {"name": ob_name}     # add namespace to ob_name? (in  self.found_references??)
-                    if(entity.name == ref_ob ) and ob_name in self.entities_names:
+                    ref = {"name": ref_ob}     # add namespace to ob_name? (in  self.found_references??)
+                    if(entity.name == ob_name ) and ref_ob in self.entities_names:
                         #  name or lub też claimName >> "claimName"  hahha
                         entity.add_ref(ref)
 
+            if entity.label_role:
+                try:
+                    ref_ob = self.get_entity_display_name(entity.label_role)
+                    ref = {"name": ref_ob}
+                    entity.add_ref(ref)
+                except ValueError:
+                    continue
+
     def _set_dep_and_serv_references(self):
         """Set references for deployment an service objects."""
-        # TODO:  ok for service and deployment? or only service?
         for entity in self.entities:
-            if entity.match_labels:
-                en_names = self.get_entities_with_app_label(entity.match_labels)
+            if entity.kind == "Service" or entity.kind == "Deployment":
+                en_names = self.get_entities_with_label(entity.match_labels)
                 for en_display_name in en_names:
                     if entity.display_name != en_display_name:
                         ref = {"name": en_display_name}
                         entity.add_ref(ref)
+            elif entity.kind == "Ingress":
+                ref_ob = self.get_entity_display_name(entity.match_labels)
+                ref = {"name": ref_ob}
+                entity.add_ref(ref)
+
+
 
     def _find_val_in_nested_dict(self, nested_dict, ob_to_search, searched_val, prior_keys=[], found = []):
         """Find all occurrences of a given object name in a set of objects.
