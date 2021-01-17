@@ -13,7 +13,7 @@ def process_yaml(file):
 
 
 def process_hcl(file):
-    document = hcl.load(file)["resource"]
+    document = hcl.load(file).get("resource", {})
 
     k8sObjects = []
 
