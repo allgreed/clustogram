@@ -1,6 +1,6 @@
 import pprint
-
 pp = pprint.PrettyPrinter(indent=1)
+
 
 class Entity:
 
@@ -29,16 +29,9 @@ class Entity:
         elif self.kind == "Service":
             try:
                 self.match_labels = cli_object["spec"]["selector"]
-                #self.match_labels.pop("name", None)
-            except KeyError:
-                pass
-        elif self.kind == "Ingress":
-            try:
-                self.match_labels = cli_object["spec"]["rules"][0]["http"]["paths"][0]["backend"]["serviceName"]
-                print("MATCH  serviceName:", self.match_labels, "for object ", self.full_name)
-            except KeyError:
-                pass
 
+            except KeyError:
+                pass
         try:
             self.label_role = cli_object["metadata"]["labels"]["role"]
         except KeyError:
@@ -111,7 +104,7 @@ class Graph:
             self.entities.append(entity)
 
         self._find_references()
-        pp.pprint(self.found_references)
+        #pp.pprint(self.found_references)
 
         graph_data.setdefault("version", self.cli_json["version"] )
         graph_data.setdefault("entities", self.get_graph_entities())
@@ -147,9 +140,8 @@ class Graph:
             for referential_set in self.found_references:
                 ref_ob, ob_name, ob_key_path = referential_set
                 if ob_key_path not in paths_to_skip:
-                    ref = {"name": ref_ob}     # add namespace to ob_name? (in  self.found_references??)
+                    ref = {"name": ref_ob}
                     if(entity.name == ob_name ) and ref_ob in self.entities_names:
-                        #  name or lub też claimName >> "claimName"  hahha
                         entity.add_ref(ref)
 
             if entity.label_role:
@@ -169,12 +161,6 @@ class Graph:
                     if entity.display_name != en_display_name:
                         ref = {"name": en_display_name}
                         entity.add_ref(ref)
-            elif entity.kind == "Ingress":
-                ref_ob = self.get_entity_display_name(entity.match_labels)
-                ref = {"name": ref_ob}
-                entity.add_ref(ref)
-
-
 
     def _find_val_in_nested_dict(self, nested_dict, ob_to_search, searched_val, prior_keys=[], found = []):
         """Find all occurrences of a given object name in a set of objects.
@@ -189,7 +175,7 @@ class Graph:
         Returns:
             found (list): set of founded occurrences [searched_val, ob_to_search, key_path_str]
         """
-        # TODO: get namespace from root object ?? // refactor
+        searched_keys = ["name", "claimName", "serviceName"]
         for key, value in nested_dict.items():
             current_key_path = prior_keys + [key]
             key_path_str = ''.join('[\'{}\']'.format(key) for key in current_key_path)
@@ -200,6 +186,6 @@ class Graph:
                     if isinstance(item, dict):
                         self._find_val_in_nested_dict(item, ob_to_search, searched_val, current_key_path, found)
             else:
-                if (key == "name" or key =="claimName") and value == searched_val:
+                if (key in searched_keys) and value == searched_val:
                     found.append([searched_val, ob_to_search, key_path_str])
         return found
