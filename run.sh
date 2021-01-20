@@ -4,4 +4,4 @@
 DATA_ENTRYPOINT=${1:-'multi.example.yaml'}
 
 nix-shell ./ui/default.nix --run "make -C ui build"
-nix-shell ./cli/default.nix --run "python cli/main.py $(pwd)/$DATA_ENTRYPOINT" | tr \' \" | UI_STATIC_CONTENT=$(pwd)/ui/dist/ nix-shell ./graph/default.nix --run "python graph/src/main.py"
+nix-shell ./cli/default.nix --run "python cli/main.py $DATA_ENTRYPOINT" | UI_STATIC_CONTENT=$(pwd)/ui/dist/ nix-shell ./graph/default.nix --run "python graph/src/main.py"
