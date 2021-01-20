@@ -1,6 +1,6 @@
 import pprint
-
 pp = pprint.PrettyPrinter(indent=1)
+
 
 class Entity:
 
@@ -11,6 +11,7 @@ class Entity:
         self.namespace = ""
         self.match_labels = {}  # only for Deployment and Service object
         self.label_app = {}
+        self.label_role = ''
         self.references = []
 
         if "namespace" in cli_object["metadata"].keys():
@@ -28,9 +29,13 @@ class Entity:
         elif self.kind == "Service":
             try:
                 self.match_labels = cli_object["spec"]["selector"]
+
             except KeyError:
                 pass
-        self.match_labels.pop("name", None)
+        try:
+            self.label_role = cli_object["metadata"]["labels"]["role"]
+        except KeyError:
+            pass
 
     @property
     def full_name(self):
@@ -71,7 +76,14 @@ class Graph:
         """Get display names of parsed entities."""
         return [en.display_name for en in self.entities]
 
-    def get_entities_with_app_label(self, match):
+    def get_entity_display_name(self, name):
+        """Get display name of given entity."""
+        for en in self.entities:
+            if en.name == name:
+                return en.display_name
+        raise ValueError
+
+    def get_entities_with_label(self, match):
         """Get entities that have 'match' as a subset of ["metadata"]["labels"].
         To be matched with services and deployment objects."""
         print(match)
@@ -128,17 +140,23 @@ class Graph:
             for referential_set in self.found_references:
                 ref_ob, ob_name, ob_key_path = referential_set
                 if ob_key_path not in paths_to_skip:
-                    ref = {"name": ob_name}     # add namespace to ob_name? (in  self.found_references??)
-                    if(entity.name == ref_ob ) and ob_name in self.entities_names:
-                        #  name or lub też claimName >> "claimName"  hahha
+                    ref = {"name": ref_ob}
+                    if(entity.name == ob_name ) and ref_ob in self.entities_names:
                         entity.add_ref(ref)
+
+            if entity.label_role:
+                try:
+                    ref_ob = self.get_entity_display_name(entity.label_role)
+                    ref = {"name": ref_ob}
+                    entity.add_ref(ref)
+                except ValueError:
+                    continue
 
     def _set_dep_and_serv_references(self):
         """Set references for deployment an service objects."""
-        # TODO:  ok for service and deployment? or only service?
         for entity in self.entities:
-            if entity.match_labels:
-                en_names = self.get_entities_with_app_label(entity.match_labels)
+            if entity.kind == "Service" or entity.kind == "Deployment":
+                en_names = self.get_entities_with_label(entity.match_labels)
                 for en_display_name in en_names:
                     if entity.display_name != en_display_name:
                         ref = {"name": en_display_name}
@@ -157,7 +175,7 @@ class Graph:
         Returns:
             found (list): set of founded occurrences [searched_val, ob_to_search, key_path_str]
         """
-        # TODO: get namespace from root object ?? // refactor
+        searched_keys = ["name", "claimName", "serviceName"]
         for key, value in nested_dict.items():
             current_key_path = prior_keys + [key]
             key_path_str = ''.join('[\'{}\']'.format(key) for key in current_key_path)
@@ -168,6 +186,6 @@ class Graph:
                     if isinstance(item, dict):
                         self._find_val_in_nested_dict(item, ob_to_search, searched_val, current_key_path, found)
             else:
-                if (key == "name" or key =="claimName") and value == searched_val:
+                if (key in searched_keys) and value == searched_val:
                     found.append([searched_val, ob_to_search, key_path_str])
         return found
