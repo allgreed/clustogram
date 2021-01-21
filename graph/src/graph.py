@@ -17,9 +17,10 @@ class Entity:
         if "namespace" in cli_object["metadata"].keys():
             if cli_object["metadata"]["namespace"] != "default":
                 self.namespace = cli_object["metadata"]["namespace"]
-
-        self.label_app = cli_object["metadata"]["labels"]
-
+        try:
+            self.label_app = cli_object["metadata"]["labels"]
+        except KeyError:
+            pass
         # LABELS MATCHER
         if self.kind == "Deployment":
             try:
@@ -86,9 +87,6 @@ class Graph:
     def get_entities_with_label(self, match):
         """Get entities that have 'match' as a subset of ["metadata"]["labels"].
         To be matched with services and deployment objects."""
-        print(match)
-        for en in self.entities:
-            print(en.label_app)
         return [en.display_name for en in self.entities if match.items() <= en.label_app.items()]
 
     def get_graph_entities(self):
